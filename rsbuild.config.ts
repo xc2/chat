@@ -21,14 +21,40 @@ export default defineConfig({
       tools: {
         rspack: [
           {
+            name: "web",
+            dependencies: ["server"],
             plugins: [
               new InjectManifest({
-                swSrc: "./server/index.ts",
+                swSrc: "./dist/server-template.js",
+                compileSrc: false,
+
                 swDest: "server.js",
               }),
             ],
           },
         ],
+      },
+    },
+    server: {
+      plugins: [],
+      source: {
+        entry: {
+          server: { import: "./server/index.ts", filename: "server-template.js" },
+        },
+        tsconfigPath: "./server/tsconfig.json",
+        assetsInclude: [/\.sql$/],
+      },
+      dev: {
+        writeToDisk: true,
+      },
+      output: {
+        target: "web-worker",
+        distPath: {},
+      },
+      tools: {
+        rspack: {
+          name: "server",
+        },
       },
     },
   },

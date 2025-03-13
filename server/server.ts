@@ -2,6 +2,7 @@ import { PGlite } from "@electric-sql/pglite";
 import { drizzle } from "drizzle-orm/pglite";
 import { createApp, createRouter, defineEventHandler, useBase } from "h3";
 import { example } from "./db/schema.ts";
+import "./db/migrate.ts";
 
 const client = new PGlite("memory://");
 const db = drizzle({ client });
