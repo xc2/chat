@@ -26,7 +26,6 @@ export function AppUpdate() {
 
     function updateFoundHandler(this: ServiceWorkerRegistration) {
       setUpdateAvailable(true);
-      this.waiting?.postMessage({ type: "SKIP_WAITING" });
     }
   }, [registration]);
 
