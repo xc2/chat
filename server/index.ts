@@ -10,10 +10,12 @@ export const handler = toWebHandler(app);
 
 addEventListener("fetch", (event) => {
   const u = new URL(event.request.url);
+  console.log(`Service worker: ${u.pathname}`, event.request.url);
   if (u.pathname.startsWith("/api/")) {
     event.respondWith(handler(event.request));
   }
 });
+console.log("url", import.meta.url);
 
 addEventListener("install", () => {
   self.skipWaiting();
