@@ -12,11 +12,11 @@
     }
   },
   "files": {
-    "ignore": []
+    "ignore": ["server/drizzle/meta/*.json"]
   },
   "overrides": [
     {
-      "include": [".vscode/*.json", "**/tsconfig.json", "**/typedoc.json"],
+      "include": [".vscode/*.json", "**/tsconfig.json", "**/tsconfig.*.json", "**/typedoc.json"],
       "json": { "parser": { "allowComments": true, "allowTrailingCommas": true } }
     }
   ],

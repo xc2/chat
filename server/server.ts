@@ -2,10 +2,13 @@ import { PGlite } from "@electric-sql/pglite";
 import { drizzle } from "drizzle-orm/pglite";
 import { createApp, createRouter, defineEventHandler, useBase } from "h3";
 import { example } from "./db/schema.ts";
-import "./db/migrate.ts";
-
+import { migrations } from "./drizzle/migrations.ts";
 const client = new PGlite("memory://");
 const db = drizzle({ client });
+export async function migrateDb() {
+  // @ts-expect-error internal
+  await db.dialect.migrate(migrations, db.session, {});
+}
 
 export const app = createApp({});
 
@@ -21,7 +24,9 @@ router.post(
     };
     await db.insert(example).values(item);
     console.log("inserted");
-    return "Hello world!";
+    const values = await db.select().from(example);
+    console.log("final values", values);
+    return values;
   })
 );
 
