@@ -5,6 +5,9 @@
     },
     {
       "path": "./web/tsconfig.json"
+    },
+    {
+      "path": "tsconfig.workspace.json"
     }
   ]
 }

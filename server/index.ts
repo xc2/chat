@@ -1,6 +1,6 @@
 import { toWebHandler } from "h3";
 import { precacheAndRoute } from "workbox-precaching";
-import { app } from "./server.ts";
+import { app, migrateDb } from "./server.ts";
 
 declare var self: ServiceWorkerGlobalScope;
 
@@ -10,12 +10,17 @@ export const handler = toWebHandler(app);
 
 addEventListener("fetch", (event) => {
   const u = new URL(event.request.url);
+  console.log(`Service worker: ${u.pathname}`, event.request.url);
   if (u.pathname.startsWith("/api/")) {
     event.respondWith(handler(event.request));
   }
 });
+console.log("url", import.meta.url);
 
-addEventListener("install", () => {
+addEventListener("install", (event) => {
+  console.log("install");
+
+  event.waitUntil(migrateDb());
   self.skipWaiting();
 });
 

@@ -1,5 +1,33 @@
-import { createApp, defineEventHandler } from "h3";
+import { PGlite } from "@electric-sql/pglite";
+import { drizzle } from "drizzle-orm/pglite";
+import { createApp, createRouter, defineEventHandler, useBase } from "h3";
+import { example } from "./db/schema.ts";
+import { migrations } from "./drizzle/migrations.ts";
+const client = new PGlite("memory://");
+const db = drizzle({ client });
+export async function migrateDb() {
+  // @ts-expect-error internal
+  await db.dialect.migrate(migrations, db.session, {});
+}
 
-export const app = createApp();
+export const app = createApp({});
 
-app.use(defineEventHandler(() => "Hello world!"));
+const router = createRouter({});
+
+router.post(
+  "/foo",
+  defineEventHandler(async () => {
+    console.log("Helloworld!");
+    const item: typeof example.$inferInsert = {
+      foo: "bar",
+      bar: 1,
+    };
+    await db.insert(example).values(item);
+    console.log("inserted");
+    const values = await db.select().from(example);
+    console.log("final values", values);
+    return values;
+  })
+);
+
+app.use(createRouter().use("/api/**", useBase("/api", router.handler)));
